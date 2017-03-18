@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.david.nytimessearch.R;
 import com.david.nytimessearch.adapters.ArticleArrayAdapter;
 import com.david.nytimessearch.fragments.SettingsFragment;
+import com.david.nytimessearch.listeners.EndlessScrollListener;
 import com.david.nytimessearch.models.Article;
 import com.david.nytimessearch.models.Settings;
 import com.david.nytimessearch.net.ArticleClient;
@@ -78,24 +79,40 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                 startActivity(i);
             }
         });
+
+        gvResults.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                //max 100 pages
+                if (page >= 100) {
+                    return false;
+                }
+                String query = etQuery.getText().toString();
+                fetchArticles(query, page - 1, false);
+//                Log.d("DEBUG", "fetching page " + (page - 1));
+                return true;
+            }
+        });
     }
 
     public void onArticleSearch(View view) {
         String query = etQuery.getText().toString();
 //        Toast.makeText(this, "Search for " + query, Toast.LENGTH_LONG).show();
 
-        fetchArticles(query);
+        fetchArticles(query, 0, true);
     }
 
-    private void fetchArticles(String query) {
-        client.getArticles(query, settings, new JsonHttpResponseHandler() {
+    private void fetchArticles(String query, int page, boolean clear) {
+        if (clear) {
+            adapter.clear();
+        }
+        client.getArticles(query, settings, page, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 JSONArray articleJsonResults = null;
 
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.clear();
                     adapter.addAll(Article.fromJSONArray(articleJsonResults));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -139,6 +156,6 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     public void onSave(Settings settings) {
         this.settings = settings;
         String query = etQuery.getText().toString();
-        fetchArticles(query);
+        fetchArticles(query, 0, true);
     }
 }

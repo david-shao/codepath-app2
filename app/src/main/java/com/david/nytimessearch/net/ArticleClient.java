@@ -24,12 +24,12 @@ public class ArticleClient {
     }
 
     // Method for accessing the search API
-    public void getArticles(final String query, Settings settings, JsonHttpResponseHandler handler) {
+    public void getArticles(final String query, Settings settings, int page, JsonHttpResponseHandler handler) {
         try {
             String url = getApiUrl("articlesearch.json");
             RequestParams params = new RequestParams();
             params.put("api-key", "3f176423a9bc4487b2eeb557adba0d5e");
-            params.put("page", 0);
+            params.put("page", page);
             params.put("q", query);
             //apply settings
             if (settings.getSort() == 1) {
