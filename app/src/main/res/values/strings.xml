@@ -2,4 +2,14 @@
     <string name="app_name">NYTimesSearch</string>
     <string name="search_hint">Enter search query</string>
     <string name="search_button">Search</string>
+    <string name="settings">Settings</string>
+    <string name="beginDate">Begin Date</string>
+    <string name="sortLabel">Sort Order</string>
+    <string name="filtersLabel">News Desk Values</string>
+    <string name="cbArts">Arts</string>
+    <string name="cbFashion"><![CDATA[Fashion & Style]]></string>
+    <string name="cbSports">Sports</string>
+    <string name="btnSave">Save</string>
+    <string name="sortOldest">Oldest</string>
+    <string name="sortNewest">Newest</string>
 </resources>
