@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,7 +90,6 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                 }
                 String query = etQuery.getText().toString();
                 fetchArticles(query, page - 1, false);
-//                Log.d("DEBUG", "fetching page " + (page - 1));
                 return true;
             }
         });
@@ -106,6 +106,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
         if (clear) {
             adapter.clear();
         }
+        Log.d("DEBUG", "fetching page " + (page));
         client.getArticles(query, settings, page, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
