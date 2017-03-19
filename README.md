@@ -2,7 +2,7 @@
 
 NYTimesSearch is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
 
-Time spent: 14 hours spent in total
+Time spent: 15 hours spent in total
 
 ## User Stories
 
@@ -28,7 +28,7 @@ The following **optional** features are implemented:
 The following **bonus** features are implemented:
 
 * [X] Use the [RecyclerView](http://guides.codepath.com/android/Using-the-RecyclerView) with the `StaggeredGridLayoutManager` to display improve the grid of image results
-* [ ] For different news articles that only have text or only have images, use [Heterogenous Layouts](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) with RecyclerView
+* [X] For different news articles that only have text or only have images, use [Heterogenous Layouts](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) with RecyclerView
 * [X] Use Parcelable instead of Serializable using the popular [Parceler library](http://guides.codepath.com/android/Using-Parceler).
 * [ ] Leverages the [data binding support module](http://guides.codepath.com/android/Applying-Data-Binding-for-Views) to bind data into layout templates.
 * [ ] Replace all icon drawables and other static image assets with [vector drawables](http://guides.codepath.com/android/Drawables#vector-drawables) where appropriate.
@@ -46,6 +46,8 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
+<img src='gifs/optionals2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
 <img src='gifs/optionals1.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 <img src='gifs/basics.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
@@ -54,7 +56,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-One of the challenges was avoiding the 3 api call per second rate limit. I had to implement a queue to store api calls and retry them with a 1 second delay whenever a call failed.
+One of the challenges was avoiding the 3 api call per second rate limit. I had to implement a queue to store api calls and retry them with a 1 second delay whenever a call failed. Figuring out how to use dynamic height image view was also a challenge. For the longest time I couldn't figure out why my images weren't using proper heights, until I found that I wasn't using the correct image url with the full images.
 
 ## Open-source libraries used
 
