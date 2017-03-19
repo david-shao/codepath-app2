@@ -18,34 +18,12 @@
         >
     </android.support.v7.widget.Toolbar>
 
-    <EditText
-        android:id="@+id/etQuery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/toolbar"
-        android:layout_toLeftOf="@+id/btnSearch"
-        android:layout_toStartOf="@+id/btnSearch"
-        android:ems="10"
-        android:hint="@string/search_hint"
-        android:inputType="textPersonName" />
-
-    <Button
-        android:id="@+id/btnSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/toolbar"
-        android:text="@string/search_button"
-        android:onClick="onArticleSearch"/>
-
     <GridView
         android:id="@+id/gvResults"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/btnSearch"
         android:numColumns="4"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/toolbar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

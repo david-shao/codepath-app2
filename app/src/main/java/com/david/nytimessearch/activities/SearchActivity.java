@@ -3,15 +3,15 @@ package com.david.nytimessearch.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 
 import com.david.nytimessearch.R;
@@ -35,9 +35,10 @@ import cz.msebera.android.httpclient.Header;
 public class SearchActivity extends AppCompatActivity implements SettingsFragment.SettingsDialogListener {
 
     Toolbar toolbar;
-    EditText etQuery;
+//    EditText etQuery;
     GridView gvResults;
-    Button btnSearch;
+//    Button btnSearch;
+    SearchView svArticles;
 
     List<Article> articles;
     ArticleArrayAdapter adapter;
@@ -52,16 +53,16 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
         setupViews();
 
         settings = new Settings();
-        client = new ArticleClient();
+        client = new ArticleClient(getApplicationContext());
     }
 
     private void setupViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        etQuery = (EditText) findViewById(R.id.etQuery);
+//        etQuery = (EditText) findViewById(etQuery);
         gvResults = (GridView) findViewById(R.id.gvResults);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
+//        btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
         gvResults.setAdapter(adapter);
@@ -87,7 +88,8 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                 if (page >= 100) {
                     return false;
                 }
-                String query = etQuery.getText().toString();
+//                String query = etQuery.getText().toString();
+                String query = svArticles.getQuery().toString();
                 Log.d("DEBUG", "scrolling to page " + (page - 1));
                 fetchArticles(query, page - 1, false);
                 return true;
@@ -96,10 +98,10 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     }
 
     public void onArticleSearch(View view) {
-        String query = etQuery.getText().toString();
+//        String query = etQuery.getText().toString();
 //        Toast.makeText(this, "Search for " + query, Toast.LENGTH_LONG).show();
 
-        fetchArticles(query, 0, true);
+//        fetchArticles(query, 0, true);
     }
 
     private void fetchArticles(String query, int page, boolean clear) {
@@ -138,6 +140,28 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
 
+        MenuItem searchItem = menu.findItem(R.id.search_articles);
+        svArticles = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        svArticles.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // perform query here
+                fetchArticles(query, 0, true);
+
+                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
+                // see https://code.google.com/p/android/issues/detail?id=24599
+                svArticles.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         return true;
     }
 
@@ -162,7 +186,8 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     @Override
     public void onSave(Settings settings) {
         this.settings = settings;
-        String query = etQuery.getText().toString();
+//        String query = etQuery.getText().toString();
+        String query = svArticles.getQuery().toString();
         fetchArticles(query, 0, true);
     }
 }

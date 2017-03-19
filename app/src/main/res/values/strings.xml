@@ -12,4 +12,5 @@
     <string name="btnSave">Save</string>
     <string name="sortOldest">Oldest</string>
     <string name="sortNewest">Newest</string>
+    <string name="search_title">Search</string>
 </resources>

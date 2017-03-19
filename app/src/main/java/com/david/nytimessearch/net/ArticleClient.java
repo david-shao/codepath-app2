@@ -1,5 +1,8 @@
 package com.david.nytimessearch.net;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.david.nytimessearch.models.Settings;
@@ -7,6 +10,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -34,19 +38,41 @@ public class ArticleClient {
 
     private static final String API_BASE_URL = "https://api.nytimes.com/svc/search/v2/";
     private AsyncHttpClient client;
+    private Context context;
 
     //queue to store our api calls
     Queue<Transaction> queue;
     Timer timer;
 
-    public ArticleClient() {
+    public ArticleClient(Context context) {
+        this.context = context;
         this.client = new AsyncHttpClient();
         this.queue = new LinkedList<>();
-        timer = new Timer();
+        this.timer = new Timer();
     }
 
     private String getApiUrl(String relativeUrl) {
         return API_BASE_URL + relativeUrl;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        Log.d("DEBUG", "network available returning: " + (activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting()));
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            Log.d("DEBUG", "exit value: " + exitValue);
+            return (exitValue == 0);
+        } catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+        Log.d("DEBUG", "not online");
+        return false;
     }
 
     // Method for accessing the search API
@@ -58,6 +84,12 @@ public class ArticleClient {
 
     //private helper method to perform the api call
     private void tryTransaction(Transaction t) {
+        if (!isNetworkAvailable()) {
+            Log.d("DEBUG", "retrying");
+            //if no connection, retry later
+            retryTransaction();
+            return;
+        }
         final String query = t.query;
         Settings settings = t.settings;
         int page = t.page;
