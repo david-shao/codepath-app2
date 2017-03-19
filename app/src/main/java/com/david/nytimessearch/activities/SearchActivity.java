@@ -13,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.david.nytimessearch.R;
 import com.david.nytimessearch.adapters.ArticleArrayAdapter;
@@ -89,6 +88,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                     return false;
                 }
                 String query = etQuery.getText().toString();
+                Log.d("DEBUG", "scrolling to page " + (page - 1));
                 fetchArticles(query, page - 1, false);
                 return true;
             }
@@ -103,10 +103,12 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     }
 
     private void fetchArticles(String query, int page, boolean clear) {
+        if (query.isEmpty()) {
+            return;
+        }
         if (clear) {
             adapter.clear();
         }
-        Log.d("DEBUG", "fetching page " + (page));
         client.getArticles(query, settings, page, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -115,6 +117,8 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                    //completed this api call, so remove from queue
+                    client.completeTransaction();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -122,7 +126,9 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Toast.makeText(getApplicationContext(), "Network error: " + errorResponse.toString(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "Network error: " + errorResponse.toString(), Toast.LENGTH_LONG).show();
+                //retry the api call in case of failure
+                client.retryTransaction();
             }
         });
     }

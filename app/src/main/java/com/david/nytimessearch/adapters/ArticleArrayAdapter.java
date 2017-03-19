@@ -56,7 +56,9 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article> {
         //remote download the image in background
         String thumbnail = article.getThumbNail();
         if (!TextUtils.isEmpty(thumbnail)) {
-            Picasso.with(context).load(thumbnail)
+            Picasso.with(context).load(thumbnail).fit().centerCrop()
+                    .placeholder(R.drawable.placeholder2)
+                    .error(R.drawable.not_available)
                     .into(imageView);
         }
 
