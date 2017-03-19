@@ -13,4 +13,5 @@
     <string name="sortOldest">Oldest</string>
     <string name="sortNewest">Newest</string>
     <string name="search_title">Search</string>
+    <string name="share_title">Share</string>
 </resources>
