@@ -1,23 +1,23 @@
 package com.david.nytimessearch.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 
 import com.david.nytimessearch.R;
-import com.david.nytimessearch.adapters.ArticleArrayAdapter;
+import com.david.nytimessearch.adapters.ArticlesAdapter;
 import com.david.nytimessearch.fragments.SettingsFragment;
-import com.david.nytimessearch.listeners.EndlessScrollListener;
+import com.david.nytimessearch.listeners.EndlessRecyclerViewScrollListener;
 import com.david.nytimessearch.models.Article;
 import com.david.nytimessearch.models.Settings;
 import com.david.nytimessearch.net.ArticleClient;
@@ -36,12 +36,15 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
 
     Toolbar toolbar;
 //    EditText etQuery;
-    GridView gvResults;
+//    GridView gvResults;
 //    Button btnSearch;
     SearchView svArticles;
+    RecyclerView rvArticles;
 
     List<Article> articles;
-    ArticleArrayAdapter adapter;
+//    ArticleArrayAdapter adapter;
+    ArticlesAdapter adapter;
+    EndlessRecyclerViewScrollListener scrollListener;
 
     Settings settings;
     ArticleClient client;
@@ -61,40 +64,63 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
         setSupportActionBar(toolbar);
 
 //        etQuery = (EditText) findViewById(etQuery);
-        gvResults = (GridView) findViewById(R.id.gvResults);
+//        gvResults = (GridView) findViewById(gvResults);
 //        btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
-        adapter = new ArticleArrayAdapter(this, articles);
-        gvResults.setAdapter(adapter);
+//        adapter = new ArticleArrayAdapter(this, articles);
+//        gvResults.setAdapter(adapter);
+//
+//        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                //create intent to display article
+//                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
+//                //get article to display
+//                Article article = articles.get(position);
+//                //pass in article into intent
+//                i.putExtra("article", article);
+//                //launch activity
+//                startActivity(i);
+//            }
+//        });
+//
+//        gvResults.setOnScrollListener(new EndlessScrollListener() {
+//            @Override
+//            public boolean onLoadMore(int page, int totalItemsCount) {
+//                //max 100 pages
+//                if (page >= 100) {
+//                    return false;
+//                }
+////                String query = etQuery.getText().toString();
+//                String query = svArticles.getQuery().toString();
+//                Log.d("DEBUG", "scrolling to page " + (page - 1));
+//                fetchArticles(query, page - 1, false);
+//                return true;
+//            }
+//        });
 
-        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                //create intent to display article
-                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-                //get article to display
-                Article article = articles.get(position);
-                //pass in article into intent
-                i.putExtra("article", article);
-                //launch activity
-                startActivity(i);
-            }
-        });
+        rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
+        adapter = new ArticlesAdapter(this, articles);
+        // Attach the adapter to the recyclerview to populate items
+        rvArticles.setAdapter(adapter);
+        // Set layout manager to position the items
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        rvArticles.setLayoutManager(layoutManager);
 
-        gvResults.setOnScrollListener(new EndlessScrollListener() {
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 //max 100 pages
                 if (page >= 100) {
-                    return false;
+                    return;
                 }
-//                String query = etQuery.getText().toString();
                 String query = svArticles.getQuery().toString();
-                Log.d("DEBUG", "scrolling to page " + (page - 1));
-                fetchArticles(query, page - 1, false);
-                return true;
+                Log.d("DEBUG", "scrolling to page " + (page));
+                fetchArticles(query, page, false);
             }
-        });
+        };
+        rvArticles.addOnScrollListener(scrollListener);
     }
 
     public void onArticleSearch(View view) {
@@ -105,11 +131,14 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     }
 
     private void fetchArticles(String query, int page, boolean clear) {
-        if (query.isEmpty()) {
+        if (TextUtils.isEmpty(query)) {
             return;
         }
         if (clear) {
-            adapter.clear();
+//            adapter.clear();
+            articles.clear();
+            adapter.notifyDataSetChanged();
+            scrollListener.resetState();
         }
         client.getArticles(query, settings, page, new JsonHttpResponseHandler() {
             @Override
@@ -118,7 +147,11 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
 
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
+//                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                    int curSize = adapter.getItemCount();
+                    List<Article> newItems = Article.fromJSONArray(articleJsonResults);
+                    articles.addAll(newItems);
+                    adapter.notifyItemRangeInserted(curSize, newItems.size());
                     //completed this api call, so remove from queue
                     client.completeTransaction();
                 } catch (JSONException e) {
@@ -129,8 +162,11 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
 //                Toast.makeText(getApplicationContext(), "Network error: " + errorResponse.toString(), Toast.LENGTH_LONG).show();
-                //retry the api call in case of failure
-                client.retryTransaction();
+                Log.d("DEBUG", "fetch articles failed with code: " + statusCode);
+                //retry the api call in case of rate limit failure
+                if (statusCode == 429) {
+                    client.retryTransaction();
+                }
             }
         });
     }

@@ -85,7 +85,7 @@ public class ArticleClient {
     //private helper method to perform the api call
     private void tryTransaction(Transaction t) {
         if (!isNetworkAvailable()) {
-            Log.d("DEBUG", "retrying");
+            Log.d("DEBUG", "no network will retry later");
             //if no connection, retry later
             retryTransaction();
             return;
