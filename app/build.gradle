@@ -40,4 +40,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.2.0'
     compile "com.android.support:support-vector-drawable:${supportLibVersion}" // VectorDrawableCompat
     compile "com.android.support:animated-vector-drawable:${supportLibVersion}" // AnimatedVectorDrawableCompat
+    compile 'com.github.bumptech.glide:glide:3.5.2'
+    compile 'com.android.support:support-v4:25.0.0'
 }

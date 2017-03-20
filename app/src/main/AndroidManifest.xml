@@ -23,4 +23,7 @@
         </activity>
     </application>
 
+    <meta-data android:name="com.david.nytimessearch.util.GlideConfiguration"
+        android:value="GlideModule"/>
+
 </manifest>

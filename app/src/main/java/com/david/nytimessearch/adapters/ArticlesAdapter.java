@@ -12,6 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.david.nytimessearch.R;
 import com.david.nytimessearch.activities.ArticleActivity;
 import com.david.nytimessearch.databinding.ItemStaggeredArticleBinding;
@@ -19,8 +23,6 @@ import com.david.nytimessearch.databinding.ItemStaggeredImageBinding;
 import com.david.nytimessearch.databinding.ItemStaggeredTextBinding;
 import com.david.nytimessearch.models.Article;
 import com.david.nytimessearch.util.DynamicHeightImageView;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -65,7 +67,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
         }
     }
 
-    public class ViewHolderGeneric extends ViewHolder implements Target {
+    public class ViewHolderGeneric extends ViewHolder {
         public DynamicHeightImageView ivImage;
         public TextView tvTitle;
 
@@ -83,19 +85,31 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
             itemView.setOnClickListener(this);
         }
 
-        @Override
-        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            // Calculate the image ratio of the loaded bitmap
-            float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
-//            Log.d("DEBUG", "setting height ratio: " + ratio);
-            // Set the ratio for the image
-            ivImage.setHeightRatio(ratio);
-            // Load the image into the view
-            ivImage.setImageBitmap(bitmap);
-        }
+        public SimpleTarget target = new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+                float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
+//                Log.d("DEBUG", "setting height ratio: " + ratio);
+                // Set the ratio for the image
+                ivImage.setHeightRatio(ratio);
+                // Load the image into the view
+                ivImage.setImageBitmap(bitmap);
+            }
+        };
+
+//        @Override
+//        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//            // Calculate the image ratio of the loaded bitmap
+//            float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
+////            Log.d("DEBUG", "setting height ratio: " + ratio);
+//            // Set the ratio for the image
+//            ivImage.setHeightRatio(ratio);
+//            // Load the image into the view
+//            ivImage.setImageBitmap(bitmap);
+//        }
     }
 
-    public class ViewHolderImage extends ViewHolder implements Target {
+    public class ViewHolderImage extends ViewHolder {
         public DynamicHeightImageView ivImage;
 
         public ViewHolderImage(View itemView) {
@@ -108,16 +122,28 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
             itemView.setOnClickListener(this);
         }
 
-        @Override
-        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            // Calculate the image ratio of the loaded bitmap
-            float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
-//            Log.d("DEBUG", "setting height ratio: " + ratio);
-            // Set the ratio for the image
-            ivImage.setHeightRatio(ratio);
-            // Load the image into the view
-            ivImage.setImageBitmap(bitmap);
-        }
+        public SimpleTarget target = new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+                float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
+//                Log.d("DEBUG", "setting height ratio: " + ratio);
+                // Set the ratio for the image
+                ivImage.setHeightRatio(ratio);
+                // Load the image into the view
+                ivImage.setImageBitmap(bitmap);
+            }
+        };
+
+//        @Override
+//        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//            // Calculate the image ratio of the loaded bitmap
+//            float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
+////            Log.d("DEBUG", "setting height ratio: " + ratio);
+//            // Set the ratio for the image
+//            ivImage.setHeightRatio(ratio);
+//            // Load the image into the view
+//            ivImage.setImageBitmap(bitmap);
+//        }
     }
 
     public class ViewHolderText extends ViewHolder {
@@ -212,8 +238,10 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
 
         String thumbnail = article.getThumbNail();
 //        Log.d("DEBUG", "thumbnail url: " + thumbnail);
-        Picasso.with(context).load(thumbnail)
-                .into(viewHolder);
+        Glide.with(context).load(thumbnail)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(viewHolder.target);
     }
 
     private void configureViewHolderImage(ViewHolderImage viewHolder, Article article) {
@@ -222,8 +250,10 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
 
         String thumbnail = article.getThumbNail();
 //        Log.d("DEBUG", "thumbnail url: " + thumbnail);
-        Picasso.with(context).load(thumbnail)
-                .into(viewHolder);
+        Glide.with(context).load(thumbnail)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(viewHolder.target);
     }
 
     private void configureViewHolderText(ViewHolderText viewHolder, Article article) {

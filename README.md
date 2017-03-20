@@ -2,7 +2,7 @@
 
 NYTimesSearch is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
 
-Time spent: 17 hours spent in total
+Time spent: 18 hours spent in total
 
 ## User Stories
 
@@ -32,7 +32,7 @@ The following **bonus** features are implemented:
 * [X] Use Parcelable instead of Serializable using the popular [Parceler library](http://guides.codepath.com/android/Using-Parceler).
 * [X] Leverages the [data binding support module](http://guides.codepath.com/android/Applying-Data-Binding-for-Views) to bind data into layout templates.
 * [X] Replace all icon drawables and other static image assets with [vector drawables](http://guides.codepath.com/android/Drawables#vector-drawables) where appropriate.
-* [ ] Replace Picasso with [Glide](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en) for more efficient image rendering.
+* [X] Replace Picasso with [Glide](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en) for more efficient image rendering.
 * [ ] Uses [retrolambda expressions](http://guides.codepath.com/android/Lambda-Expressions) to cleanup event handling blocks.
 * [ ] Leverages the popular [GSON library](http://guides.codepath.com/android/Using-Android-Async-Http-Client#decoding-with-gson-library) to streamline the parsing of JSON data.
 * [ ] Leverages the [Retrofit networking library](http://guides.codepath.com/android/Consuming-APIs-with-Retrofit) to access the New York Times API.
@@ -40,10 +40,13 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
+* [X] UI improvements.
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
+
+<img src='gifs/optionals3.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 <img src='gifs/optionals2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 

@@ -3,7 +3,7 @@ package com.david.nytimessearch.util;
 import android.databinding.BindingAdapter;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 /**
  * Created by David on 3/19/2017.
@@ -12,6 +12,8 @@ import com.squareup.picasso.Picasso;
 public class BindingAdapterUtils {
     @BindingAdapter({"bind:imageUrl"})
     public static void loadImage(ImageView view, String url) {
-        Picasso.with(view.getContext()).load(url).into(view);
+//        Picasso.with(view.getContext()).load(url).into(view);
+        Glide.with(view.getContext()).load(url).into(view);
     }
+
 }
