@@ -1,6 +1,7 @@
 package com.david.nytimessearch.fragments;
 
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.david.nytimessearch.R;
+import com.david.nytimessearch.databinding.FragmentSettingsBinding;
 import com.david.nytimessearch.models.Settings;
 
 import java.text.DateFormat;
@@ -37,6 +39,8 @@ public class SettingsFragment extends DialogFragment implements DatePickerFragme
 
     Settings settings;
 
+    FragmentSettingsBinding binding;
+
     public SettingsFragment() {
         //Needs to be empty
     }
@@ -55,17 +59,25 @@ public class SettingsFragment extends DialogFragment implements DatePickerFragme
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settings, container);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, true);
+        return binding.getRoot();
+//        return inflater.inflate(R.layout.fragment_settings, container);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        etDate = (EditText) view.findViewById(R.id.etDate);
-        spSort = (Spinner) view.findViewById(R.id.spSort);
-        cbArts = (CheckBox) view.findViewById(R.id.cbArts);
-        cbFashion = (CheckBox) view.findViewById(R.id.cbFashion);
-        cbSports = (CheckBox) view.findViewById(R.id.cbSports);
-        btnSave = (Button) view.findViewById(R.id.btnSave);
+//        etDate = (EditText) view.findViewById(R.id.etDate);
+//        spSort = (Spinner) view.findViewById(R.id.spSort);
+//        cbArts = (CheckBox) view.findViewById(R.id.cbArts);
+//        cbFashion = (CheckBox) view.findViewById(R.id.cbFashion);
+//        cbSports = (CheckBox) view.findViewById(R.id.cbSports);
+//        btnSave = (Button) view.findViewById(R.id.btnSave);
+        etDate = binding.etDate;
+        spSort = binding.spSort;
+        cbArts = binding.cbArts;
+        cbFashion = binding.cbFashion;
+        cbSports = binding.cbSports;
+        btnSave = binding.btnSave;
 
         settings = getArguments().getParcelable("settings");
 
@@ -73,6 +85,9 @@ public class SettingsFragment extends DialogFragment implements DatePickerFragme
     }
 
     private void setupViews() {
+        binding.setSettings(settings);
+        binding.executePendingBindings();
+
         Date beginDate = settings.getBeginDate();
         if (beginDate != null) {
             etDate.setText(DateFormat.getDateInstance().format(beginDate));
@@ -112,21 +127,21 @@ public class SettingsFragment extends DialogFragment implements DatePickerFragme
         });
 
         //setup checkboxes
-        cbArts.setChecked(settings.artsFilter());
+//        cbArts.setChecked(settings.artsFilter());
         cbArts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 settings.setArtsFilter(b);
             }
         });
-        cbFashion.setChecked(settings.fashionFilter());
+//        cbFashion.setChecked(settings.fashionFilter());
         cbFashion.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 settings.setFashionFilter(b);
             }
         });
-        cbSports.setChecked(settings.sportsFilter());
+//        cbSports.setChecked(settings.sportsFilter());
         cbSports.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

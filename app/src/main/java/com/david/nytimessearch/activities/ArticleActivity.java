@@ -1,6 +1,7 @@
 package com.david.nytimessearch.activities;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
@@ -13,6 +14,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.david.nytimessearch.R;
+import com.david.nytimessearch.databinding.ActivityArticleBinding;
 import com.david.nytimessearch.models.Article;
 
 /**
@@ -26,17 +28,19 @@ public class ArticleActivity extends AppCompatActivity {
     private Intent shareIntent;
     WebView webView;
 
+    ActivityArticleBinding binding;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_article);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_article);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
         Article article = getIntent().getParcelableExtra("article");
         String url = article.getWebUrl();
-        webView = (WebView) findViewById(R.id.wvArticle);
+        webView = binding.wvArticle;
 
         webView.setWebViewClient(new WebViewClient() {
             @Override

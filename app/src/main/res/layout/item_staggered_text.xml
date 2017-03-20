@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:padding="5dp"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable name="article" type="com.david.nytimessearch.models.Article"/>
+    </data>
+    <LinearLayout
+        android:padding="5dp"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="TextView"
-        android:textSize="12sp"
-        android:maxLines="5"
-        android:ellipsize="end" />
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="TextView"
+            android:textSize="12sp"
+            android:maxLines="5"
+            android:ellipsize="end"
+            android:text='@{article.headLine}' />
 
-</LinearLayout>
+    </LinearLayout>
+</layout>

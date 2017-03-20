@@ -1,5 +1,6 @@
 package com.david.nytimessearch.activities;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -16,6 +17,7 @@ import android.view.View;
 
 import com.david.nytimessearch.R;
 import com.david.nytimessearch.adapters.ArticlesAdapter;
+import com.david.nytimessearch.databinding.ActivitySearchBinding;
 import com.david.nytimessearch.fragments.SettingsFragment;
 import com.david.nytimessearch.listeners.EndlessRecyclerViewScrollListener;
 import com.david.nytimessearch.models.Article;
@@ -49,10 +51,12 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     Settings settings;
     ArticleClient client;
 
+    ActivitySearchBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
         setupViews();
 
         settings = new Settings();
@@ -60,7 +64,8 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     }
 
     private void setupViews() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
 //        etQuery = (EditText) findViewById(etQuery);
@@ -99,7 +104,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
 //            }
 //        });
 
-        rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
+        rvArticles = binding.rvArticles;
         adapter = new ArticlesAdapter(this, articles);
         // Attach the adapter to the recyclerview to populate items
         rvArticles.setAdapter(adapter);

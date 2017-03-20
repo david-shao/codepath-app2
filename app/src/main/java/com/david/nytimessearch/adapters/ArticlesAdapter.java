@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import com.david.nytimessearch.R;
 import com.david.nytimessearch.activities.ArticleActivity;
+import com.david.nytimessearch.databinding.ItemStaggeredArticleBinding;
+import com.david.nytimessearch.databinding.ItemStaggeredImageBinding;
+import com.david.nytimessearch.databinding.ItemStaggeredTextBinding;
 import com.david.nytimessearch.models.Article;
 import com.david.nytimessearch.util.DynamicHeightImageView;
 import com.squareup.picasso.Picasso;
@@ -26,6 +29,10 @@ import java.util.List;
  */
 
 public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHolder> {
+
+    ItemStaggeredArticleBinding genericBinding;
+    ItemStaggeredImageBinding imageBinding;
+    ItemStaggeredTextBinding textBinding;
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
@@ -67,8 +74,10 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            ivImage = (DynamicHeightImageView) itemView.findViewById(R.id.ivImage);
-            tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+            genericBinding = ItemStaggeredArticleBinding.bind(itemView);
+
+            ivImage = genericBinding.ivImage;
+            tvTitle = genericBinding.tvTitle;
 
             // Attach a click listener to the entire row view
             itemView.setOnClickListener(this);
@@ -92,7 +101,9 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
         public ViewHolderImage(View itemView) {
             super(itemView);
 
-            ivImage = (DynamicHeightImageView) itemView.findViewById(R.id.ivImage);
+            imageBinding = ItemStaggeredImageBinding.bind(itemView);
+
+            ivImage = imageBinding.ivImage;
 
             itemView.setOnClickListener(this);
         }
@@ -115,7 +126,9 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
         public ViewHolderText(View itemView) {
             super(itemView);
 
-            tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+            textBinding = ItemStaggeredTextBinding.bind(itemView);
+
+            tvTitle = textBinding.tvTitle;
 
             itemView.setOnClickListener(this);
         }
@@ -189,9 +202,10 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
     }
 
     private void configureViewHolderGeneric(ViewHolderGeneric viewHolder, Article article) {
-        // Set item views based on your views and data model
-        TextView textView = viewHolder.tvTitle;
-        textView.setText(article.getHeadLine());
+//        TextView textView = viewHolder.tvTitle;
+//        textView.setText(article.getHeadLine());
+        genericBinding.setArticle(article);
+        genericBinding.executePendingBindings();
 
         DynamicHeightImageView imageView = viewHolder.ivImage;
         imageView.setImageResource(0);
@@ -213,8 +227,10 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
     }
 
     private void configureViewHolderText(ViewHolderText viewHolder, Article article) {
-        TextView textView = viewHolder.tvTitle;
-        textView.setText(article.getHeadLine());
+//        TextView textView = viewHolder.tvTitle;
+//        textView.setText(article.getHeadLine());
+        textBinding.setArticle(article);
+        textBinding.executePendingBindings();
     }
 
     // Returns the total count of items in the list
