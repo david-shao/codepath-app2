@@ -2,9 +2,12 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#9C654A</color>
     <color name="cursorAccent">#FFFF00</color>
     <color name="controlNormal">#FFFFFF</color>
-    <color name="controlActivated">#00FFFF</color>
-    <color name="bgColor">#000000</color>
+    <color name="controlActivated">#9C654A</color>
+    <color name="bgColor">#5757C3</color>
+    <color name="gridBgColor">#211E28</color>
+    <color name="cellBgColor">#FFFFFF</color>
+    <color name="cellTextColor">#4D3B3B</color>
 </resources>

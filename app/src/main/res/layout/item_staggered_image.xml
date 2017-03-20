@@ -7,7 +7,9 @@
     <LinearLayout
         android:padding="5dp"
         android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/CellTheme"
+        android:layout_margin="3dp">
 
         <com.david.nytimessearch.util.DynamicHeightImageView
             android:id="@+id/ivImage"

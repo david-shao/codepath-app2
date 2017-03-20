@@ -7,6 +7,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:padding="5dp"
+        android:theme="@style/GridTheme"
         tools:context="com.david.nytimessearch.activities.SearchActivity">
 
         <android.support.v7.widget.Toolbar
@@ -19,6 +20,8 @@
         </android.support.v7.widget.Toolbar>
 
         <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="2dp"
             android:id="@+id/rvArticles"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

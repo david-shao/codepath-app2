@@ -3,9 +3,9 @@
     <string name="search_hint">Enter search query</string>
     <string name="search_button">Search</string>
     <string name="settings">Settings</string>
-    <string name="beginDate">Begin Date</string>
-    <string name="sortLabel">Sort Order</string>
-    <string name="filtersLabel">News Desk Values</string>
+    <string name="beginDate"><b>Begin Date</b></string>
+    <string name="sortLabel"><b>Sort Order</b></string>
+    <string name="filtersLabel"><b>News Desk Values</b></string>
     <string name="cbArts">Arts</string>
     <string name="cbFashion"><![CDATA[Fashion & Style]]></string>
     <string name="cbSports">Sports</string>

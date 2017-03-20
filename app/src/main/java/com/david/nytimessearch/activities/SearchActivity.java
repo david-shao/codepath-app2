@@ -109,7 +109,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
         // Attach the adapter to the recyclerview to populate items
         rvArticles.setAdapter(adapter);
         // Set layout manager to position the items
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         rvArticles.setLayoutManager(layoutManager);
 
