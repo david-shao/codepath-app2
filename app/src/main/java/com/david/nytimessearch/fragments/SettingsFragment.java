@@ -96,14 +96,11 @@ public class SettingsFragment extends DialogFragment implements DatePickerFragme
         }
 
         //edit text handler for picking date
-        etDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                DatePickerFragment datePickerFragment = DatePickerFragment.newInstance(settings.getBeginDate());
-                datePickerFragment.setTargetFragment(SettingsFragment.this, 1);
-                datePickerFragment.show(fm, "fragment_date_picker");
-            }
+        etDate.setOnClickListener(v -> {
+            FragmentManager fm = getFragmentManager();
+            DatePickerFragment datePickerFragment = DatePickerFragment.newInstance(settings.getBeginDate());
+            datePickerFragment.setTargetFragment(SettingsFragment.this, 1);
+            datePickerFragment.show(fm, "fragment_date_picker");
         });
 
         //setup sort spinner
@@ -128,36 +125,18 @@ public class SettingsFragment extends DialogFragment implements DatePickerFragme
 
         //setup checkboxes
 //        cbArts.setChecked(settings.artsFilter());
-        cbArts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                settings.setArtsFilter(b);
-            }
-        });
+        cbArts.setOnCheckedChangeListener((compoundButton, b) -> settings.setArtsFilter(b));
 //        cbFashion.setChecked(settings.fashionFilter());
-        cbFashion.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                settings.setFashionFilter(b);
-            }
-        });
+        cbFashion.setOnCheckedChangeListener((compoundButton, b) -> settings.setFashionFilter(b));
 //        cbSports.setChecked(settings.sportsFilter());
-        cbSports.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                settings.setSportsFilter(b);
-            }
-        });
+        cbSports.setOnCheckedChangeListener((compoundButton, b) -> settings.setSportsFilter(b));
 
         //save button handler for returning back to activity
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SettingsDialogListener listener = (SettingsDialogListener) getActivity();
-                listener.onSave(settings);
-                //close dialog fragment
-                dismiss();
-            }
+        btnSave.setOnClickListener(view -> {
+            SettingsDialogListener listener = (SettingsDialogListener) getActivity();
+            listener.onSave(settings);
+            //close dialog fragment
+            dismiss();
         });
     }
 
