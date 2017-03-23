@@ -1,9 +1,14 @@
 package com.david.nytimessearch.adapters;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,7 +22,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.david.nytimessearch.R;
-import com.david.nytimessearch.activities.ArticleActivity;
 import com.david.nytimessearch.databinding.ItemStaggeredArticleBinding;
 import com.david.nytimessearch.databinding.ItemStaggeredImageBinding;
 import com.david.nytimessearch.databinding.ItemStaggeredTextBinding;
@@ -58,11 +62,33 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
             if (position != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
                 Article article = articles.get(position);
                 //create intent to display article
-                Intent i = new Intent(context, ArticleActivity.class);
-                //pass in article into intent
-                i.putExtra("article", article);
-                //launch activity
-                context.startActivity(i);
+//                Intent i = new Intent(context, ArticleActivity.class);
+//                //pass in article into intent
+//                i.putExtra("article", article);
+//                //launch activity
+//                context.startActivity(i);
+
+                // Use a CustomTabsIntent.Builder to configure CustomTabsIntent.
+                String url = article.getWebUrl();
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                // set toolbar color and/or setting custom actions before invoking build()
+                builder.setToolbarColor(ContextCompat.getColor(context, R.color.bgColor));
+
+                //add share icon
+                Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_share);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, url);
+                int requestCode = 100;
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                // Map the bitmap, text, and pending intent to this icon
+                // Set tint to be true so it matches the toolbar color
+                builder.setActionButton(bitmap, context.getResources().getString(R.string.share_link), pendingIntent, true);
+
+                // Once ready, call CustomTabsIntent.Builder.build() to create a CustomTabsIntent
+                CustomTabsIntent customTabsIntent = builder.build();
+                // and launch the desired Url with CustomTabsIntent.launchUrl()
+                customTabsIntent.launchUrl(context, Uri.parse(url));
             }
         }
     }
