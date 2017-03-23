@@ -23,16 +23,14 @@ import com.david.nytimessearch.listeners.EndlessRecyclerViewScrollListener;
 import com.david.nytimessearch.models.Article;
 import com.david.nytimessearch.models.Settings;
 import com.david.nytimessearch.net.ArticleClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.david.nytimessearch.net.ArticlesResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SearchActivity extends AppCompatActivity implements SettingsFragment.SettingsDialogListener {
 
@@ -52,6 +50,8 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     ArticleClient client;
 
     ActivitySearchBinding binding;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,33 +145,55 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
             adapter.notifyDataSetChanged();
             scrollListener.resetState();
         }
-        client.getArticles(query, settings, page, new JsonHttpResponseHandler() {
+//        client.getArticles(query, settings, page, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                JSONArray articleJsonResults = null;
+//
+//                try {
+//                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+////                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
+//                    int curSize = adapter.getItemCount();
+//                    List<Article> newItems = Article.fromJSONArray(articleJsonResults);
+//                    articles.addAll(newItems);
+//                    adapter.notifyItemRangeInserted(curSize, newItems.size());
+//                    //completed this api call, so remove from queue
+//                    client.completeTransaction();
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+////                Toast.makeText(getApplicationContext(), "Network error: " + errorResponse.toString(), Toast.LENGTH_LONG).show();
+//                Log.d("DEBUG", "fetch articles failed with code: " + statusCode);
+//                //retry the api call in case of rate limit failure
+//                if (statusCode == 429) {
+//                    client.retryTransaction();
+//                }
+//            }
+//        });
+        client.getArticles(query, settings, page, new Callback<ArticlesResponse>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                JSONArray articleJsonResults = null;
-
-                try {
-                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-//                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
-                    int curSize = adapter.getItemCount();
-                    List<Article> newItems = Article.fromJSONArray(articleJsonResults);
-                    articles.addAll(newItems);
-                    adapter.notifyItemRangeInserted(curSize, newItems.size());
-                    //completed this api call, so remove from queue
-                    client.completeTransaction();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            public void onResponse(Call<ArticlesResponse> call, Response<ArticlesResponse> response) {
+                int statusCode = response.code();
+                if (statusCode == 429) {
+                    Log.d("DEBUG", "fetch articles failed with response code " + statusCode);
+                    client.retryTransaction();
+                    return;
                 }
+                int curSize = adapter.getItemCount();
+                ArticlesResponse articlesResponse = response.body();
+                List<Article> newItems = articlesResponse.getArticles();
+                articles.addAll(newItems);
+                adapter.notifyItemRangeInserted(curSize, newItems.size());
+                client.completeTransaction();
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-//                Toast.makeText(getApplicationContext(), "Network error: " + errorResponse.toString(), Toast.LENGTH_LONG).show();
-                Log.d("DEBUG", "fetch articles failed with code: " + statusCode);
-                //retry the api call in case of rate limit failure
-                if (statusCode == 429) {
-                    client.retryTransaction();
-                }
+            public void onFailure(Call<ArticlesResponse> call, Throwable t) {
+                Log.d("DEBUG", "fetch articles failed and didn't get response.");
             }
         });
     }
